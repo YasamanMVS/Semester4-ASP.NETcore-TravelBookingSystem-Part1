@@ -1,0 +1,160 @@
+﻿@model GBC_Travel_Group_50.Models.Booking
+
+@{
+    ViewData["Title"] = "Create Booking";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <!-- Service Type Selection -->
+            <div class="form-group">
+                <label asp-for="ServiceType" class="control-label">Service Type</label>
+                <select asp-for="ServiceType" class="form-control" asp-items="Html.GetEnumSelectList<ServiceType>()" id="serviceTypeSelect">
+                    <option value="">Select a Service</option>
+                </select>
+                <span asp-validation-for="ServiceType" class="text-danger"></span>
+            </div>
+
+            <!-- Service Selection Dropdown -->
+            <div class="form-group" id="serviceSelectionDiv" style="display: none;">
+                <label class="control-label">Select Service</label>
+                <select id="serviceSelection" class="form-control" name="SelectedServiceID">
+                    <!-- Options will be dynamically populated based on ServiceType -->
+                </select>
+            </div>
+
+            <!-- Date Fields for Hotel and Car Rental -->
+            <div id="dateFields" style="display: none;">
+                <div class="form-group">
+                    <label asp-for="StartDate" class="control-label">Start Date</label>
+                    <input asp-for="StartDate" class="form-control" type="date" />
+                    <span asp-validation-for="StartDate" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="EndDate" class="control-label">End Date</label>
+                    <input asp-for="EndDate" class="form-control" type="date" />
+                    <span asp-validation-for="EndDate" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- Passenger Count Field for Flight -->
+            <div class="form-group" id="passengerCountDiv" style="display: none;">
+                <label asp-for="NumberOfPassengers" class="control-label">Number of Passengers</label>
+                <input asp-for="NumberOfPassengers" class="form-control" type="number" min="1" />
+                <span asp-validation-for="NumberOfPassengers" class="text-danger"></span>
+            </div>
+
+            <!-- Total Price -->
+            <div class="form-group">
+                <label asp-for="TotalPrice" class="control-label">Total Price</label>
+                <input asp-for="TotalPrice" class="form-control" readonly />
+                <span asp-validation-for="TotalPrice" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        $(document).ready(function () {
+            $('#serviceTypeSelect').change(function () {
+                var serviceType = $(this).val();
+                toggleServiceFields(serviceType);
+            });
+
+            $('form').submit(function (e) {
+                // Disable fields that are not required for the selected service type before form submission
+                disableNotRequiredFields();
+            });
+
+            $('#serviceSelection, #NumberOfPassengers, #StartDate, #EndDate').change(function () {
+                calculateTotalPrice();
+            });
+
+            function toggleServiceFields(serviceType) {
+                var serviceSelectionDiv = $('#serviceSelectionDiv');
+                var passengerCountDiv = $('#passengerCountDiv');
+                var dateFields = $('#dateFields');
+
+                // Reset visibility and enable all fields to ensure they are included in form submission if previously disabled
+                serviceSelectionDiv.hide();
+                passengerCountDiv.hide();
+                dateFields.hide();
+                $('#StartDate, #EndDate, #NumberOfPassengers').prop('disabled', false);
+
+                // Fetch services based on the selected type
+                fetch(`/Bookings/GetServicesByType?serviceType=${serviceType}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        var serviceSelection = $('#serviceSelection');
+                        serviceSelection.empty().append('<option value="">Select a Service</option>');
+                        data.forEach(service => {
+                            serviceSelection.append(new Option(service.name, service.id));
+                        });
+                        serviceSelectionDiv.show();
+
+                        // Adjust visibility based on the service type
+                        if (serviceType === '0') { // Flight
+                            passengerCountDiv.show();
+                        } else if (serviceType === '1' || serviceType === '2') { // Hotel or Car Rental
+                            dateFields.show();
+                        }
+                    })
+                    .catch(error => console.error('Error fetching services:', error));
+            }
+
+            function disableNotRequiredFields() {
+                var serviceType = $('#serviceTypeSelect').val();
+                if (serviceType === '0') { // Flight
+                    $('#StartDate, #EndDate').prop('disabled', true);
+                } else {
+                    $('#NumberOfPassengers').prop('disabled', true);
+                }
+            }
+
+            function calculateTotalPrice() {
+                var selectedServiceId = $('#serviceSelection').val();
+                var serviceType = $('#serviceTypeSelect').val();
+                var startDate = $('#StartDate').val();
+                var endDate = $('#EndDate').val();
+                var numberOfPassengers = $('#NumberOfPassengers').val();
+
+                // Determine the URL for price calculation based on service type
+                var url = `/Bookings/CalculateTotalPrice?serviceId=${selectedServiceId}&serviceType=${serviceType}`;
+
+                // Include additional parameters based on service type
+                if (serviceType === '0') {
+                    url += `&numberOfPassengers=${numberOfPassengers}`;
+                } else {
+                    url += `&startDate=${startDate}&endDate=${endDate}`;
+                }
+
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        $('#TotalPrice').val(data.totalPrice.toFixed(2));
+                    })
+                    .catch(error => console.error('Error calculating total price:', error));
+            }
+        });
+
+    </script>
+}

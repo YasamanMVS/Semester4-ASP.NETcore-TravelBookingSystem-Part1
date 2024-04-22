@@ -1,0 +1,62 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6">
+            <h1 class="display-4">Welcome to GBC Travel Group 50</h1>
+            <p class="lead">Your gateway to seamless travel experiences.</p>
+            <p>Explore flights, book hotels, and rent cars effortlessly with our user-friendly platform.</p>
+            <a href="@Url.Action("Index", "Home")" class="btn btn-primary btn-lg" role="button">Get Started</a>
+        </div>
+        <div class="col-md-6">
+            <img src="~/images/travel-image.jpg" alt="Travel Image" class="img-fluid rounded">
+            <p class="mt-2">
+                <small class="text-muted">
+                    Photo by Luca Bravo</a>
+                    on <a href="https://unsplash.com/photos/photo-id?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Unsplash</a>
+                </small>
+            </p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card mb-4 box-shadow">
+                <img class="card-img-top" src="~/images/flights-image.jpg" alt="Flights">
+                <div class="card-body">
+                    <h5 class="card-title">Flights</h5>
+                    <p class="card-text">Find the best deals on flights to your dream destinations.</p>
+                    <a href="@Url.Action("Index", "Flights")" class="btn btn-sm btn-outline-primary">Explore Flights</a>
+                    <p class="card-text"><small class="text-muted">Photo by Philip Myrtorp</a> on <a href="https://unsplash.com/photos/white-airplane-flying-in-the-sky-during-daytime-iiqpxCg2GD4?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Unsplash</a></small></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card mb-4 box-shadow">
+                <img class="card-img-top" src="~/images/hotels-image.jpg" alt="Hotels">
+                <div class="card-body">
+                    <h5 class="card-title">Hotels</h5>
+                    <p class="card-text">Book comfortable and affordable hotels for a relaxing stay.</p>
+                    <a href="@Url.Action("Index", "Hotels")" class="btn btn-sm btn-outline-primary">Explore Hotels</a>
+                    <p class="card-text"><small class="text-muted">Photo by Francesca Saraco</a> on <a href="https://unsplash.com/photos/coconut-palm-trees-in-hotel-lobby-_dS27XGgRyQ?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Unsplash</a></small></p>
+  
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card mb-4 box-shadow">
+                <img class="card-img-top" src="~/images/cars-image.jpg" alt="Car Rentals">
+                <div class="card-body">
+                    <h5 class="card-title">Car Rentals</h5>
+                    <p class="card-text">Rent a car and drive through your travel destinations at your own pace.</p>
+                    <a href="@Url.Action("Index", "CarRentals")" class="btn btn-sm btn-outline-primary">Explore Car Rentals</a>
+                    <p class="card-text"><small class="text-muted">Photo by Slade Lapusnak</a> on <a href="https://unsplash.com/photos/black-bmw-coupe-parked-on-street-during-daytime-z-3lZfFdsj0?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Unsplash</a></small></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

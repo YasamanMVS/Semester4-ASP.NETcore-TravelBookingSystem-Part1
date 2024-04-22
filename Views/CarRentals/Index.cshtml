@@ -1,0 +1,69 @@
+﻿@model IEnumerable<GBC_Travel_Group_50.Models.CarRental>
+
+@{
+    ViewData["Title"] = "Car Rentals";
+}
+
+<div class="container mt-5">
+    <h1>@ViewData["Title"]</h1>
+
+    <p>
+        <a class="btn btn-primary" asp-action="Create">Create </a>
+    </p>
+
+    <!-- Search form start -->
+    <form asp-action="Index" method="get">
+        <div class="form-row align-items-center" style="width: 200px;">
+            <div class="col-auto">
+                <input type="text" class="form-control mb-2" name="searchCompany" placeholder="Search by company..." value="@ViewData["searchCompany"]">
+            </div>
+            <div class="col-auto">
+                <input type="text" class="form-control mb-2" name="searchModel" placeholder="Search by model..." value="@ViewData["searchModel"]">
+            </div>
+            <div class="col-auto">
+                <input type="text" class="form-control mb-2" name="searchLocation" placeholder="Search by location..." value="@ViewData["searchLocation"]">
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary mb-2">Search</button>
+            </div>
+        </div>
+    </form>
+    <!-- Search form end -->
+    @if (Model.Any())
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Rental Company</th>
+                    <th>Rental Model</th>
+                    <th>Price Per Day</th>
+                    <th>Location</th>
+                    <th>Availability</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.RentalCompany)</td>
+                        <td>@Html.DisplayFor(modelItem => item.RentalModel)</td>
+                        <td>@Html.DisplayFor(modelItem => item.PricePerDay)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Location)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Availability)</td>
+                        <td>
+                            <a class="btn btn-warning btn-sm" asp-action="Edit" asp-route-id="@item.RentalID">Edit</a>
+                            <a class="btn btn-info btn-sm" asp-action="Details" asp-route-id="@item.RentalID">Details</a>
+                            <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@item.RentalID"
+                               onclick="return confirm('Are you sure you want to delete this car rental?')">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No car rentals available.</p>
+    }
+</div>
